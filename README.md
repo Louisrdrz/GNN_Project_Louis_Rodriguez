@@ -88,6 +88,10 @@ The model's performance is summarized as follows:
 
 These results demonstrate that the GNN effectively captures molecular graph structures and achieves competitive accuracy in property prediction.
 
+Below is a visual representation of the training and validation loss over 100 epochs:
+
+![Training and Validation Loss](images/loss_plot.png)
+
 ---
 
 ## Challenges and Observations
