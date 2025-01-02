@@ -90,7 +90,7 @@ These results demonstrate that the GNN effectively captures molecular graph stru
 
 Below is a visual representation of the training and validation loss over 100 epochs:
 
-![Training and Validation Loss](images/loss_plot.png)
+![Training and Validation Loss](loss_plot.png)
 
 ---
 
