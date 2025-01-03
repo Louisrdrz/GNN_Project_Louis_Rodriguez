@@ -4,6 +4,7 @@ from models.gnn_models import GNNModel
 from data.load_data import load_zinc_data
 from utils.metrics import mean_absolute_error
 import os
+import matplotlib.pyplot as plt
 
 def train(model, loader, optimizer, criterion, device):
     """
@@ -19,7 +20,6 @@ def train(model, loader, optimizer, criterion, device):
         
         optimizer.zero_grad()
         out = model(data)
-        # Fix the size mismatch by squeezing the model output
         loss = criterion(out.squeeze(-1), data.y)
         loss.backward()
         optimizer.step()
@@ -73,10 +73,17 @@ def main():
     patience = 10
     patience_counter = 0
 
+    # To store loss values for plotting
+    train_losses = []
+    val_losses = []
+
     # Training loop
     for epoch in range(epochs):
         train_loss = train(model, train_loader, optimizer, criterion, device)
         val_loss, val_mae = evaluate(model, val_loader, criterion, device)
+
+        train_losses.append(train_loss)
+        val_losses.append(val_loss)
 
         print(f"Epoch {epoch+1}/{epochs}, Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}, Val MAE: {val_mae:.4f}")
 
@@ -91,6 +98,18 @@ def main():
         if patience_counter >= patience:
             print(f"Early stopping triggered at epoch {epoch+1}")
             break
+
+    # Plot training and validation loss
+    plt.figure()
+    plt.plot(range(1, len(train_losses) + 1), train_losses, label='Train Loss')
+    plt.plot(range(1, len(val_losses) + 1), val_losses, label='Validation Loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.title('Training and Validation Loss')
+    plt.legend()
+    plt.grid(True)
+    plt.savefig('loss_plot.png')
+    plt.show()
 
     # Load the best model and test
     model.load_state_dict(torch.load('best_model.pth'))
